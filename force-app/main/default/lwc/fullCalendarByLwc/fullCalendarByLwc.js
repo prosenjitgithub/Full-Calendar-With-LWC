@@ -1,4 +1,5 @@
 import { LightningElement } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 import { loadScript, loadStyle } from 'lightning/platformResourceLoader';
 import FullCalendarPlugin from '@salesforce/resourceUrl/FullCalendarResource';
 
@@ -45,6 +46,10 @@ export default class FullCalendarByLwc extends LightningElement {
         });
     }
 
+    getAppointmentsFromServer() {
+
+    }
+
     initCalendar(eventList) {
         let self = this;
         const calendarEl = this.template.querySelector('div.fullcalendar');
@@ -59,7 +64,6 @@ export default class FullCalendarByLwc extends LightningElement {
             },
            events: eventList,
            titleFormat: {month: 'short', day: 'numeric', year: 'numeric' }, 
-           slotEventOverlap : false,
            eventClick: function(info) {
                 self[NavigationMixin.Navigate]({
                     type: 'standard__recordPage',
