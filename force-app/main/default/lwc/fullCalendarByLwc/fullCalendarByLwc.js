@@ -1,10 +1,9 @@
 import { LightningElement } from "lwc";
-import { NavigationMixin } from "lightning/navigation";
 import { loadScript, loadStyle } from "lightning/platformResourceLoader";
 import FullCalendarPlugin from "@salesforce/resourceUrl/FullCalendarResource";
 import getAppointments from "@salesforce/apex/MyCalendarController.getMyAppointments";
 
-export default class FullCalendarByLwc extends NavigationMixin(LightningElement) {
+export default class FullCalendarByLwc extends LightningElement {
     isResourceLoaded = false;
 
     // Redercallback method will load FullCalendar Plugin Javascripts and CSS.
@@ -56,11 +55,11 @@ export default class FullCalendarByLwc extends NavigationMixin(LightningElement)
                 });
             });
     }
-
+    // get record information from Salesforce Server.
     getAppointmentsFromServer() {
         getAppointments()
-            .then((result) => {
-                this.generateEventJson(result);
+            .then((resposne) => {
+                this.generateEventJson(resposne);
             })
             .catch((error) => {
                 console.error({
@@ -69,10 +68,10 @@ export default class FullCalendarByLwc extends NavigationMixin(LightningElement)
                 });
             });
     }
-
-    generateEventJson(result) {
+    // genrates the JSON using the response from server
+    generateEventJson(resposne) {
         let eventList = [];
-        result.forEach((event) => {
+        resposne.forEach((event) => {
             eventList.push({
                 id: event.recordId,
                 start: event.startTime,
@@ -80,9 +79,10 @@ export default class FullCalendarByLwc extends NavigationMixin(LightningElement)
                 title: event.name,
             });
         });
+        console.log(JSON.stringify(eventList));
         this.initCalendar(eventList);
     }
-
+    // initiate the Calendar in the DOM.
     initCalendar(eventList) {
         let self = this;
         const calendarEl = this.template.querySelector("div.fullcalendar");
@@ -97,16 +97,7 @@ export default class FullCalendarByLwc extends NavigationMixin(LightningElement)
             },
             events: eventList,
             titleFormat: { month: "short", day: "numeric", year: "numeric" },
-            eventClick: function (info) {
-                alert('fff');
-                self[NavigationMixin.Navigate]({
-                    type: "standard__recordPage",
-                    attributes: {
-                        recordId: info.event.id,
-                        actionName: "view",
-                    },
-                });
-            },
+            
         });
         calendar.render();
     }

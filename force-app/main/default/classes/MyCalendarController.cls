@@ -10,7 +10,6 @@ public with sharing class MyCalendarController {
             wrapper.add(new AppointmentWrapper(appointment.Name, 
                                                 appointment.Start_Time__c, 
                                                 appointment.End_Time__c, 
-                                                appointment.Status__c, 
                                                 appointment.Id));    
         }
         return wrapper;
